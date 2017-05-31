@@ -1,3 +1,10 @@
-<h1>
-  {{title}}
-</h1>
+<div id="page">
+  <div style="border-bottom:2px #CCC;">Fidget Spinner in Angular! <button (click)="rotation = rotation - 15">15 left</button><button>15 right</button></div>
+  <div id="spinner"
+    [style.transform]="'rotate('+rotation+'deg)'"
+    (touchstart)="touchstart($event)"
+    (touchend)="touchend($event)"
+    (touchmove)="touchmove($event)">
+    <img src="/assets/spinner.svg">
+    </div>
+</div>
