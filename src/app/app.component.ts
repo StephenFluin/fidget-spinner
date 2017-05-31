@@ -53,6 +53,9 @@ export class AppComponent {
     return angle;
   }
 
+  /**
+   * Animation-frame based rendering of momentum. I understand this doesn't match real physics yet
+   */
   handleMomentum = () => {
     this.rotation += this.rotationMomentum;
     this.rotationMomentum = this.rotationMomentum * 0.95;
