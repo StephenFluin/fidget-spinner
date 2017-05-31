@@ -34,7 +34,7 @@ export class AppComponent {
   end(event) {
     this.rotationOffset = this.rotation;
     let angle = this.getAngleOfTouch(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-    this.rotationMomentum = angle - this.startAngle;
+    this.rotationMomentum = (angle - this.startAngle) / 2;
     this.handleMomentum();
   }
   move(event) {
@@ -58,8 +58,8 @@ export class AppComponent {
    */
   handleMomentum = () => {
     this.rotation += this.rotationMomentum;
-    this.rotationMomentum = this.rotationMomentum * 0.95;
-    if(this.rotationMomentum < 10) {
+    this.rotationMomentum = this.rotationMomentum * 0.97;
+    if(Math.abs(this.rotationMomentum) < 4) {
       this.rotationMomentum = 0;
     } else {
       requestAnimationFrame(this.handleMomentum);
