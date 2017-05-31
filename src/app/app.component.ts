@@ -20,26 +20,50 @@ export class AppComponent {
   startAngle;
 
   momentumTimeout;
+  holding = false;
 
   constructor() {
     this.handleMomentum();
   }
 
   start(event) {
-    this.startTouchPosX = event.changedTouches[0].clientX;
-    this.startTouchPosY = event.changedTouches[0].clientY;
+    //console.log(event);
+    if (event instanceof PointerEvent) {
+      this.startTouchPosX = event.clientX;
+      this.startTouchPosY = event.clientY;
+    } else {
+      this.startTouchPosX = event.changedTouches[0].clientX;
+      this.startTouchPosY = event.changedTouches[0].clientY;
+    }
+
     this.startAngle = this.getAngleOfTouch(this.startTouchPosX, this.startTouchPosY)
     this.rotationMomentum = 0;
+    this.holding = true;
   }
   end(event) {
+    //console.log("lifting event");
+    let angle;
+    if(event instanceof PointerEvent) {
+      angle = this.getAngleOfTouch(event.clientX, event.clientY);
+    } else {
+      angle = this.getAngleOfTouch(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    }
     this.rotationOffset = this.rotation;
-    let angle = this.getAngleOfTouch(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     this.rotationMomentum = (angle - this.startAngle) / 2;
     this.handleMomentum();
+    this.holding = false;
   }
   move(event) {
-    let angle = this.getAngleOfTouch(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-    this.setRotation(angle - this.startAngle);
+    if (this.holding) {
+      //console.log("Move event", event);
+      let angle;
+      if (event instanceof PointerEvent) {
+        angle = this.getAngleOfTouch(event.clientX, event.clientY);
+      } else {
+        angle = this.getAngleOfTouch(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+      }
+      this.setRotation(angle - this.startAngle);
+    }
   }
   setRotation(angle) {
     this.rotation = angle + this.rotationOffset;
@@ -58,8 +82,8 @@ export class AppComponent {
    */
   handleMomentum = () => {
     this.rotation += this.rotationMomentum;
-    this.rotationMomentum = this.rotationMomentum * 0.97;
-    if(Math.abs(this.rotationMomentum) < 4) {
+    this.rotationMomentum = this.rotationMomentum * 0.98;
+    if (Math.abs(this.rotationMomentum) < 4) {
       this.rotationMomentum = 0;
     } else {
       requestAnimationFrame(this.handleMomentum);

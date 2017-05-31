@@ -23,4 +23,6 @@ body {
   justify-content:center;
 }
 #spinner {
+  user-select: none;
+  pointer-events:none;
 }

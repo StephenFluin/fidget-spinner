@@ -1,6 +1,9 @@
 <div id="page">
   <div style="border-bottom:2px #CCC;">Fidget Spinner in Angular!</div>
   <div id="spinner-container"
+    (pointerdown)="start($event)"
+    (pointermove)="move($event)"
+    (pointerup)="end($event)"
     (touchstart)="start($event)"
     (touchend)="end($event)"
     (touchmove)="move($event)">
