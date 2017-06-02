@@ -25,4 +25,5 @@ body {
 #spinner {
   user-select: none;
   pointer-events:none;
+  max-width:50%;
 }

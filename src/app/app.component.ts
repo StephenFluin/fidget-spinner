@@ -22,51 +22,54 @@ export class AppComponent {
   momentumTimeout;
   holding = false;
 
+  spins = JSON.parse(localStorage['spins'] || '0');
+  spinInteger = 0;
+
+  time: number;
+
   constructor() {
     this.handleMomentum();
   }
 
   start(event) {
-    //console.log(event);
-    if (event instanceof PointerEvent) {
-      this.startTouchPosX = event.clientX;
-      this.startTouchPosY = event.clientY;
-    } else {
-      this.startTouchPosX = event.changedTouches[0].clientX;
-      this.startTouchPosY = event.changedTouches[0].clientY;
-    }
+    this.startTouchPosX = this.getEventX(event);
+    this.startTouchPosY = this.getEventY(event);
 
     this.startAngle = this.getAngleOfTouch(this.startTouchPosX, this.startTouchPosY)
     this.rotationMomentum = 0;
     this.holding = true;
   }
   end(event) {
-    //console.log("lifting event");
-    let angle;
-    if(event instanceof PointerEvent) {
-      angle = this.getAngleOfTouch(event.clientX, event.clientY);
-    } else {
-      angle = this.getAngleOfTouch(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-    }
+    let angle = this.getAngleOfTouch(this.getEventX(event), this.getEventY(event));
     this.rotationOffset = this.rotation;
     this.rotationMomentum = (angle - this.startAngle) / 2;
     this.handleMomentum();
     this.holding = false;
+    localStorage['spins'] = JSON.stringify(this.spins);
   }
   move(event) {
     if (this.holding) {
-      //console.log("Move event", event);
-      let angle;
-      if (event instanceof PointerEvent) {
-        angle = this.getAngleOfTouch(event.clientX, event.clientY);
-      } else {
-        angle = this.getAngleOfTouch(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-      }
+      let angle = this.getAngleOfTouch(this.getEventX(event), this.getEventY(event));
       this.setRotation(angle - this.startAngle);
     }
   }
   setRotation(angle) {
     this.rotation = angle + this.rotationOffset;
+  }
+
+  getEventX(event) {
+    if (event instanceof PointerEvent) {
+      return event.clientX;
+    } else {
+      return event.changedTouches[0].clientX;
+    }
+  }
+  getEventY(event) {
+    if (event instanceof PointerEvent) {
+      return event.clientY;
+    } else {
+      return event.changedTouches[0].clientY;
+    }
   }
 
 
@@ -77,13 +80,27 @@ export class AppComponent {
     return angle;
   }
 
+
   /**
-   * Animation-frame based rendering of momentum. I understand this doesn't match real physics yet
+   * Animation-frame based rendering of momentum.
    */
   handleMomentum = () => {
     this.rotation += this.rotationMomentum;
-    this.rotationMomentum = this.rotationMomentum * 0.98;
-    if (Math.abs(this.rotationMomentum) < 4) {
+    this.spins += Math.abs(this.rotationMomentum / 360);
+    this.spinInteger = Math.round(this.spins);
+
+    const now = Date.now();
+    const deltaTime = now - (this.time || now);
+    this.time = now;
+
+    // Calcule eponential decay based on true spinner timings
+    let original = this.rotationMomentum;
+    const decay = Math.pow(Math.E, -.00007 * deltaTime);
+    this.rotationMomentum = this.rotationMomentum * decay;
+
+
+
+    if (Math.abs(this.rotationMomentum) < .25) {
       this.rotationMomentum = 0;
     } else {
       requestAnimationFrame(this.handleMomentum);
