@@ -1,6 +1,0 @@
-{
-  "static.ignore": [
-    "\\.js\\.map$",
-    "icons"
-  ]
-}
