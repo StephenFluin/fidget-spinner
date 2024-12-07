@@ -121,7 +121,6 @@
       }
     }
   },
-  "defaultProject": "fidget-spinner",
   "cli": {
     "analytics": "d6d50fa0-68b1-4c64-88dc-bf7622c69c62"
   }
