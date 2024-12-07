@@ -74,18 +74,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "fidget-spinner:build"
+            "buildTarget": "fidget-spinner:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "fidget-spinner:build:production"
+              "buildTarget": "fidget-spinner:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fidget-spinner:build"
+            "buildTarget": "fidget-spinner:build"
           }
         },
         "test": {
