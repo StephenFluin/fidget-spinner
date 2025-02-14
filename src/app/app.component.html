@@ -1,13 +1,22 @@
 <div id="page">
-  <div style="border-bottom:2px #CCC;">Fidget Spinner in Angular! <span *ngIf="spins > 0">{{spinInteger}} Rotations</span></div>
-  <div id="spinner-container"
+  <div style="border-bottom: 2px #ccc">
+    Fidget Spinner in Angular! @if (spins > 0) {
+    <span>{{ spinInteger }} Rotations</span>
+    }
+  </div>
+  <div
+    id="spinner-container"
     (pointerdown)="start($event)"
     (pointermove)="move($event)"
     (pointerup)="end($event)"
     (touchstart)="start($event)"
     (touchend)="end($event)"
-    (touchmove)="move($event)">
-    <img src="assets/spinner.png" id="spinner"
-    [style.transform]="'rotate('+rotation+'deg)'">
-    </div>
+    (touchmove)="move($event)"
+  >
+    <img
+      src="assets/spinner.png"
+      id="spinner"
+      [style.transform]="'rotate(' + rotation + 'deg)'"
+    />
+  </div>
 </div>

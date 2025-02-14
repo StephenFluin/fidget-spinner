@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    standalone: false
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  imports: [],
 })
 export class AppComponent {
   /**
@@ -23,7 +23,7 @@ export class AppComponent {
   momentumTimeout;
   holding = false;
 
-  spins = JSON.parse(localStorage['spins'] || '0');
+  spins = JSON.parse(localStorage["spins"] || "0");
   spinInteger = 0;
 
   time: number;
@@ -36,21 +36,30 @@ export class AppComponent {
     this.startTouchPosX = this.getEventX(event);
     this.startTouchPosY = this.getEventY(event);
 
-    this.startAngle = this.getAngleOfTouch(this.startTouchPosX, this.startTouchPosY)
+    this.startAngle = this.getAngleOfTouch(
+      this.startTouchPosX,
+      this.startTouchPosY
+    );
     this.rotationMomentum = 0;
     this.holding = true;
   }
   end(event) {
-    let angle = this.getAngleOfTouch(this.getEventX(event), this.getEventY(event));
+    let angle = this.getAngleOfTouch(
+      this.getEventX(event),
+      this.getEventY(event)
+    );
     this.rotationOffset = this.rotation;
     this.rotationMomentum = (angle - this.startAngle) / 2;
     this.handleMomentum();
     this.holding = false;
-    localStorage['spins'] = JSON.stringify(this.spins);
+    localStorage["spins"] = JSON.stringify(this.spins);
   }
   move(event) {
     if (this.holding) {
-      let angle = this.getAngleOfTouch(this.getEventX(event), this.getEventY(event));
+      let angle = this.getAngleOfTouch(
+        this.getEventX(event),
+        this.getEventY(event)
+      );
       this.setRotation(angle - this.startAngle);
     }
   }
@@ -73,14 +82,18 @@ export class AppComponent {
     }
   }
 
-
   getAngleOfTouch(touchX, touchY) {
-    const { height: height, width: width, top: top, left: left } = document.getElementById('spinner').getBoundingClientRect();
+    const {
+      height: height,
+      width: width,
+      top: top,
+      left: left,
+    } = document.getElementById("spinner").getBoundingClientRect();
     const [centerX, centerY] = [width / 2 + left, height / 2 + top];
-    const angle = Math.atan2(touchY - centerY, touchX - centerX) * 180 / Math.PI;
+    const angle =
+      (Math.atan2(touchY - centerY, touchX - centerX) * 180) / Math.PI;
     return angle;
   }
-
 
   /**
    * Animation-frame based rendering of momentum.
@@ -96,15 +109,13 @@ export class AppComponent {
 
     // Calcule eponential decay based on true spinner timings
     let original = this.rotationMomentum;
-    const decay = Math.pow(Math.E, -.00007 * deltaTime);
+    const decay = Math.pow(Math.E, -0.00007 * deltaTime);
     this.rotationMomentum = this.rotationMomentum * decay;
 
-
-
-    if (Math.abs(this.rotationMomentum) < .25) {
+    if (Math.abs(this.rotationMomentum) < 0.25) {
       this.rotationMomentum = 0;
     } else {
       requestAnimationFrame(this.handleMomentum);
     }
-  }
+  };
 }
