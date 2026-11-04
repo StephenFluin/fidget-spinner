@@ -1,16 +1,15 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { Component, computed, signal } from "@angular/core";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [],
 })
 export class AppComponent {
   /**
    * The physical rotation of the spinner at a given time.
    */
-  rotation = 0;
+  rotation = signal(0);
   /**
    * How far from starting point we are. Used only when handling
    */
@@ -24,8 +23,8 @@ export class AppComponent {
   momentumTimeout;
   holding = false;
 
-  spins = JSON.parse(localStorage["spins"] || "0");
-  spinInteger = 0;
+  spins = signal<number>(JSON.parse(localStorage["spins"] || "0"));
+  spinInteger = computed(() => Math.round(this.spins()));
 
   time: number;
 
@@ -49,11 +48,11 @@ export class AppComponent {
       this.getEventX(event),
       this.getEventY(event)
     );
-    this.rotationOffset = this.rotation;
+    this.rotationOffset = this.rotation();
     this.rotationMomentum = (angle - this.startAngle) / 2;
     this.handleMomentum();
     this.holding = false;
-    localStorage["spins"] = JSON.stringify(this.spins);
+    localStorage["spins"] = JSON.stringify(this.spins());
   }
   move(event) {
     if (this.holding) {
@@ -65,7 +64,7 @@ export class AppComponent {
     }
   }
   setRotation(angle) {
-    this.rotation = angle + this.rotationOffset;
+    this.rotation.set(angle + this.rotationOffset);
   }
 
   getEventX(event) {
@@ -100,9 +99,8 @@ export class AppComponent {
    * Animation-frame based rendering of momentum.
    */
   handleMomentum = () => {
-    this.rotation += this.rotationMomentum;
-    this.spins += Math.abs(this.rotationMomentum / 360);
-    this.spinInteger = Math.round(this.spins);
+    this.rotation.update((r) => r + this.rotationMomentum);
+    this.spins.update((s) => s + Math.abs(this.rotationMomentum / 360));
 
     const now = Date.now();
     const deltaTime = now - (this.time || now);

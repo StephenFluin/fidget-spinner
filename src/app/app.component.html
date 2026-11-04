@@ -1,7 +1,7 @@
 <div id="page">
   <div style="border-bottom: 2px #ccc">
-    Fidget Spinner in Angular! @if (spins > 0) {
-    <span>{{ spinInteger }} Rotations</span>
+    Fidget Spinner in Angular! @if (spins() > 0) {
+    <span>{{ spinInteger() }} Rotations</span>
     }
   </div>
   <div
@@ -16,7 +16,7 @@
     <img
       src="assets/spinner.png"
       id="spinner"
-      [style.transform]="'rotate(' + rotation + 'deg)'"
+      [style.transform]="'rotate(' + rotation() + 'deg)'"
     />
   </div>
 </div>
